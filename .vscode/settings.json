@@ -1,0 +1,15 @@
+{
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": true },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#6b04fb",
+    "titleBar.activeBackground": "#6b04fb",
+    "titleBar.inactiveBackground": "#6b04fb",
+    "statusBar.foreground": "#000",
+    "titleBar.inactiveForeground": "#000",
+    "titleBar.activeForeground": "#000"
+  },
+  "window.title": "Natours API"
+}
