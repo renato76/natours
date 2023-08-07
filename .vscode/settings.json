@@ -4,9 +4,9 @@
   "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "workbench.colorCustomizations": {
-    "statusBar.background": "#6b04fb",
-    "titleBar.activeBackground": "#6b04fb",
-    "titleBar.inactiveBackground": "#6b04fb",
+    "statusBar.background": "#ec3fef",
+    "titleBar.activeBackground": "#ec3fef",
+    "titleBar.inactiveBackground": "#ec3fef",
     "statusBar.foreground": "#000",
     "titleBar.inactiveForeground": "#000",
     "titleBar.activeForeground": "#000"
