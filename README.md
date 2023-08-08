@@ -1,17 +1,9 @@
 # **Natours** 🚀
 
-Code along project to learn Node.js, Express, MongoDB
+Code along project to practice building an API with Node.js, Express, MongoDB, and Mongoose.
 
 <p align="center">
-  <img src="./images/node.png" width="150">
-</p>
-
-<p align="center">
-  <img src="./images/express.png" width="150">
-</p>
-
-<p align="center">
-<img src="./images/mongodb.png" width="150">
+  <img src="./images/mern.jpeg" width="1200">
 </p>
 
 # **Screenshots** ⭐️
