@@ -4,6 +4,8 @@ const { getAllTours, getTour, createTour, updateTour, deleteTour } = tourControl
 
 const router = express.Router()
 
+router.param('id', tourController.checkID)
+
 router
   .route('/')
   .get(getAllTours)
