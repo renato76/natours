@@ -4,12 +4,12 @@
   "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "workbench.colorCustomizations": {
-    "statusBar.background": "#ff8031",
-    "titleBar.activeBackground": "#ff8031",
-    "titleBar.inactiveBackground": "#ff8031",
+    "statusBar.background": "#31a6ff",
+    "titleBar.activeBackground": "#31a6ff",
+    "titleBar.inactiveBackground": "#31a6ff",
     "statusBar.foreground": "#000",
     "titleBar.inactiveForeground": "#000",
-    "titleBar.activeForeground": "#000"
+    "titleBar.activeForeground": "#000",
   },
   "window.title": "Natours API"
 }

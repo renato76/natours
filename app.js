@@ -8,9 +8,13 @@ const baseUrl = '/api/v1'
 const app = express()
 
 // 1. MIDDLEWARES
-app.use(morgan('dev'))
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+}
 
 app.use(express.json())
+
+app.use(express.static(`${__dirname}/public`))
 
 // the 3 arguments below, req, res, next, can be called whatever you want, but they must be in this order
 // what you see below is common naming convention
