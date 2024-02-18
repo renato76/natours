@@ -7,7 +7,7 @@ const userRouter = require('./routes/userRoutes')
 const baseUrl = '/api/v1'
 const app = express()
 
-// 1. MIDDLEWARES
+// 1. MIDDLEWARE
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
@@ -15,13 +15,6 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json())
 
 app.use(express.static(`${__dirname}/public`))
-
-// the 3 arguments below, req, res, next, can be called whatever you want, but they must be in this order
-// what you see below is common naming convention
-app.use((req, res, next) => {
-  console.log('Hello from the middleware 🤗')
-  next()
-})
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString()
@@ -31,5 +24,12 @@ app.use((req, res, next) => {
 // 2. MOUNTING THE ROUTES
 app.use(`${baseUrl}/tours`, tourRouter)
 app.use(`${baseUrl}/users`, userRouter)
+
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server`
+  })
+})
 
 module.exports = app
