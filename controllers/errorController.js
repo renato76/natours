@@ -50,22 +50,19 @@ const sendErrorProd = (err, res) => {
 };
 
 module.exports = (err, req, res, next) => {
-  // console.log(err.stack);
-
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    console.log(err.statusCode)
     let error = { ...err };
+    // console.log(error)
 
-
-    if (err.statusCode === 404) error = handleCastErrorDB(error);
-    if (error.statusCode === 11000) error = handleDuplicateFieldsDB(error);
-    // if (error.name === 'ValidationError')
-    //   error = handleValidationErrorDB(error);
+    if (error.statusCode === 404) error = handleCastErrorDB(error);
+    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (error.name === 'ValidationError')
+      error = handleValidationErrorDB(error);
 
     sendErrorProd(error, res);
   }
