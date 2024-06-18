@@ -16,6 +16,8 @@ router.patch('/resetPassword/:token', authController.resetPassword)
 
 router.patch('/updateMyPassword', authController.protect, authController.updatePassword)
 
+router.patch('/updateMe', )
+
 router
   .route('/')
   .get(getAllUsers)
