@@ -44,7 +44,7 @@ Don't use for Apps with heavy server side processing CPu intensive
 - Returning values from async functions
 - Waiting for multiple promises simultaneaously
 
-## Section 6 - Building Natours App
+## Section 6 - Building Natours App - Express JS
 
 - Set up Express and Basic Routing
 
@@ -103,16 +103,225 @@ So change it to:
 
 ```
 
+At this stage we are getting the data from our data file locally, so we need to read it with fs.readFileSync, which is asynchronous
+
+```
+  const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'))
+``` 
+
 So now you get back json response in Postman!
 
-- Install Postman
-  getpostman.com and install the app
+Next, we change the GET request to an endpoint
 
-- APIs and RESTful API Design
-- GET, POST , PATCH, DELETE requests
-- Middleware
-- Env variables
+```
+  app.get('/api/v1/tours', (req, res) => {
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tours
+      }
+    })
+  })
+```
+
+<span style="background-color:purple">
+So to summarise, when we call this endpoint '/api/v1/tours', the app.get is called, and that in turn returns the data which is the tours we fetched with readFileSync
+</span>
+
+</br>
+
+### POST request - need Middleware 
+
+Out of the box Express does not allow you to just do post request, we need to use a middleware for this, so the way to do it is:
+
+```
+  app.use(express.json)
+```
+
+This will use the middleware to add a body to the request
+
+If you console log the req.body in the app.post, you can see what the data looks like
+
+```
+  app.post('/api/v1/tours', (req, res) => {
+    console.log(req.body)
+    res.send('Done)
+  })
+```
+
+### Refactoring
+
+we can move the callback functions into their own function
+
+For example:
+
+```
+const getAllTours = (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours
+    }
+  })
+}
+```
+
+So now we can simply call that function after the route:
+
+```
+app.get('/api/v1/tours', getAllTours)
+```
+
+
+Now, we can take this refactoring a little further, and chain requests which are on the same route:
+
+```
+  app
+    .route('/api/v1/tours')
+    .get(getAllTours)
+    .post(createTour)
+```
+
+Similarly we can chain all requests for the route which needs an ID on the end:
+
+```
+  app
+    .route('/api/v1/tours:id')
+    .get(getTour)
+    .patch(updateTour)
+    .delete(deleteTour)
+```
+
+Then we end up moving all the route handlers into their own file and exporting them
+
+So for tours we did this:
+
+![alt text](image.png)
+
+Then  we import all the route handlers in tourRoutes, and use object destructuring and pass those into the appropriate routes
+
+![alt text](image-1.png)
+
+### Middleware
+
+
+
 
 ## Section 7 - Intro to Mongo DB
 
 ## Section 8 - Using Mongo DB with Mongoose
+
+Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node.js. It provides a higher-level abstraction for working with MongoDB, allowing developers to define schemas for their data models, validate data, and interact with the database using JavaScript objects instead of directly writing MongoDB queries. Here are some key features and uses of Mongoose:
+
+Key Features
+Schema Definitions: Mongoose allows you to define the structure of your documents and the data types of their fields. This ensures data consistency and integrity.
+
+Data Validation: You can define validation rules for your schema fields, ensuring that data meets specific criteria before being saved to the database.
+
+Middleware: Mongoose supports middleware (also known as pre and post hooks) that allows you to perform operations before or after certain actions, such as saving or deleting a document.
+
+Query Building: Mongoose provides a rich API for building and executing queries, making it easier to retrieve and manipulate data.
+
+Population: This feature allows you to reference documents in other collections, enabling complex data relationships similar to joins in relational databases.
+
+Virtuals: Virtual properties allow you to define fields that are computed from other fields but are not stored in the database.
+
+Plugins: Mongoose has a plugin system that allows you to add reusable functionality to your schemas and models.
+
+Common Uses
+Data Modeling: Mongoose is used to define the structure of the data and the relationships between different pieces of data in an application.
+
+Data Validation and Sanitization: By enforcing schema rules and custom validation logic, Mongoose ensures that only valid data is stored in the database.
+
+CRUD Operations: Mongoose simplifies the process of creating, reading, updating, and deleting documents in MongoDB, providing an easy-to-use API.
+
+Middleware for Pre and Post Operations: Mongoose middleware functions allow you to execute code before or after certain operations, such as running custom logic before saving a document.
+
+Complex Queries and Aggregations: Mongoose's query API supports complex queries and aggregations, making it easier to retrieve and process data from MongoDB.
+
+Example Use Case
+Suppose you are building a blogging platform where users can create and manage posts. You could use Mongoose to define the schema for the posts and users, validate data, and handle database operations.
+
+```
+const mongoose = require('mongoose');
+
+// Define the user schema
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: [true, 'Username is required'],
+    unique: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+    match: [/.+\@.+\..+/, 'Please fill a valid email address'],
+  },
+  password: {
+    type: String,
+    required: [true, 'Password is required'],
+    minlength: 6,
+  }
+});
+
+// Define the post schema
+const postSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Title is required'],
+    trim: true,
+  },
+  body: {
+    type: String,
+    required: [true, 'Body is required'],
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Author is required'],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// Create the models
+const User = mongoose.model('User', userSchema);
+const Post = mongoose.model('Post', postSchema);
+
+// Example of creating a new user
+const newUser = new User({
+  username: 'johndoe',
+  email: 'john.doe@example.com',
+  password: 'securepassword',
+});
+
+// Save the new user to the database
+newUser.save()
+  .then(user => {
+    console.log('User saved:', user);
+    
+    // Example of creating a new post
+    const newPost = new Post({
+      title: 'My First Post',
+      body: 'This is the content of my first post.',
+      author: user._id,
+    });
+
+    // Save the new post to the database
+    return newPost.save();
+  })
+  .then(post => {
+    console.log('Post saved:', post);
+  })
+  .catch(err => {
+    console.error('Error:', err);
+  });
+
+```
+
+In this example, Mongoose is used to define schemas for users and posts, validate the data, create new documents, and handle the relationships between the documents (e.g., the author field in the Post schema references a User document).
