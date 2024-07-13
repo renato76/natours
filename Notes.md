@@ -199,6 +199,17 @@ So for tours we did this:
 
 ![alt text](image.png)
 
+Side note, what tech is used in above code?
+
+<span style="background-color:#1a75ff">
+  Node.js: The JavaScript runtime environment that allows the execution of server-side code.
+  Express: The web application framework for Node.js that is used to create web applications and APIs. This is inferred from the use of req, res, and next objects, which are typical in Express middleware functions and route handlers.
+  MongoDB: The NoSQL database where the user data is stored. This is indicated by the use of User.findOne({ email: req.body.email }) to query the database.
+  Mongoose: The Object Data Modeling (ODM) library for MongoDB and Node.js, used for managing relationships between data and performing schema validation. This is suggested by the use of Mongoose methods like findOne and save on the User model.
+</span>
+
+
+
 Then  we import all the route handlers in tourRoutes, and use object destructuring and pass those into the appropriate routes
 
 ![alt text](image-1.png)
