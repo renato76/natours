@@ -18,7 +18,7 @@ app.use(express.json())
 
 app.use(express.static(`${__dirname}/public`))
 
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   req.requestTime = new Date().toISOString()
   // console.log(req.headers)
   next()
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 app.use(`${baseUrl}/tours`, tourRouter)
 app.use(`${baseUrl}/users`, userRouter)
 
-app.all('*', (req, res, next) => {
+app.all('*', (req, _res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`), 404)
 })
 
