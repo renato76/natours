@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
   passwordResetToken: String,
   passwordResetExpires: Date,
   active: {
-    type: Boolean,   
+    type: Boolean,
     default: true,
     select: false
   }
@@ -66,6 +66,9 @@ userSchema.pre('save', function (next) {
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
+
+// userSchema.pre means we want it to execute before a query
+// we use the regexp with ^ to look for anything thats starts with find, such asfindByIdAndUpdate etc
 
 userSchema.pre(/^find/, function (next) {
   // this points to the current query
