@@ -106,7 +106,7 @@ const tourSchema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     }
-  ]
+  ],
 },
   {
     toJSON: { virtuals: true },
@@ -116,6 +116,13 @@ const tourSchema = new mongoose.Schema({
 // we need a regular function below so we can reference "this" ot get the duration
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7
+})
+
+// virtual populate, connecting the tour with reviews
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
 })
 
 
