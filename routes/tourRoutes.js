@@ -1,6 +1,7 @@
 const express = require('express')
 const tourController = require('../controllers/tourController')
 const authController = require("../controllers/authController")
+const reviewController = require('../controllers/reviewController')
 
 const { getAllTours, getTour, createTour, updateTour, deleteTour, aliasTopTours, getTourStats, getMonthlyPlan } = tourController
 
@@ -27,5 +28,13 @@ router
   .delete(authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
     deleteTour)
+
+router
+  .route('/:tourId/reviews')
+  .post(
+    authController.protect,
+    authController.restrictTo('user'),
+    reviewController.createReview
+  )
 
 module.exports = router

@@ -107,7 +107,7 @@ At this stage we are getting the data from our data file locally, so we need to 
 
 ```
   const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'))
-``` 
+```
 
 So now you get back json response in Postman!
 
@@ -130,7 +130,7 @@ So to summarise, when we call this endpoint '/api/v1/tours', the app.get is call
 
 </br>
 
-### POST request - need Middleware 
+### POST request - need Middleware
 
 Out of the box Express does not allow you to just do post request, we need to use a middleware for this, so the way to do it is:
 
@@ -173,7 +173,6 @@ So now we can simply call that function after the route:
 app.get('/api/v1/tours', getAllTours)
 ```
 
-
 Now, we can take this refactoring a little further, and chain requests which are on the same route:
 
 ```
@@ -208,16 +207,11 @@ Side note, what tech is used in above code?
   Mongoose: The Object Data Modeling (ODM) library for MongoDB and Node.js, used for managing relationships between data and performing schema validation. This is suggested by the use of Mongoose methods like findOne and save on the User model.
 </span>
 
-
-
-Then  we import all the route handlers in tourRoutes, and use object destructuring and pass those into the appropriate routes
+Then we import all the route handlers in tourRoutes, and use object destructuring and pass those into the appropriate routes
 
 ![alt text](image-1.png)
 
 ### Middleware
-
-
-
 
 ## Section 7 - Intro to Mongo DB
 
@@ -315,7 +309,7 @@ const newUser = new User({
 newUser.save()
   .then(user => {
     console.log('User saved:', user);
-    
+
     // Example of creating a new post
     const newPost = new Post({
       title: 'My First Post',
@@ -336,3 +330,71 @@ newUser.save()
 ```
 
 In this example, Mongoose is used to define schemas for users and posts, validate the data, create new documents, and handle the relationships between the documents (e.g., the author field in the Post schema references a User document).
+
+### MVC Pattern
+
+A pattern we got into in this course was to create a tourModel, or update the tourModel with more code, then update the tourController, for example getAllTours looks like this:
+
+```
+exports.getAllTours = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(Tour.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+
+  const tours = await features.query
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours
+    }
+  })
+})
+```
+
+Then update the route to handle the incoming requests, for example for getAllTours, this is handling get requests to the root, ie "/" and calling the getAllTours from the tour controller.
+
+The getAllTours function is designed to retrieve all tours from the mongo db database with various query features applied, such as filtering, sorting, field limiting, and pagination.
+
+```
+router
+  .route('/')
+  .get(authController.protect, getAllTours)
+  .post(createTour)
+```
+
+
+## Model
+
+File: tourModel.js
+
+The model is responsible for defining the structure of the data and handling data-related logic. In this case, the Tour model defines the schema for tours using Mongoose.
+
+Purpose: Defines the structure of the Tour documents in the MongoDB database, including validation, virtual properties, and middleware for handling specific operations on documents.
+
+## View
+
+File: tourRoutes.js
+
+In the context of a typical web application, views are usually templates or components that render the UI. However, in a RESTful API, views are represented by the routes that determine which controller function to call based on the HTTP request.
+Purpose: Maps HTTP routes to controller functions. It ensures that the correct function is called for each endpoint, handling route-specific middleware such as authentication and authorization.
+
+## Controller
+
+File: tourController.js
+
+Controllers handle the logic for responding to HTTP requests. They interact with the model to retrieve or modify data and send the appropriate response to the client.
+Purpose: Implements the business logic for handling requests related to tours. It uses the model to query the database and sends responses to the client, handling any necessary processing or data manipulation.
+
+## MVC Summary
+
+Model (tourModel.js): Defines the data structure and handles data validation and manipulation.
+View (tourRoutes.js): Maps URL paths to controller actions, acting as an intermediary between the client and the controller.
+Controller (tourController.js): Contains the logic for handling requests, manipulating data using the model, and sending appropriate responses.
+In this MVC pattern:
+
+Model handles data-related logic.
+View handles routing and request mapping.
+Controller handles the application logic and user interactions.
