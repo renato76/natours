@@ -365,7 +365,6 @@ router
   .post(createTour)
 ```
 
-
 ## Model
 
 File: tourModel.js
@@ -398,3 +397,57 @@ In this MVC pattern:
 Model handles data-related logic.
 View handles routing and request mapping.
 Controller handles the application logic and user interactions.
+
+## Breakdown of how the review route handlers work
+
+To understand how the reviews route works in this Express application, let's break down the setup and functionality based on the code snippets provided:
+
+Main Tour Router Setup:
+
+The main router for tours is defined in a file where you are setting up various routes related to tours.
+When the URL pattern /:tourId/reviews is encountered, the reviewRouter is used. This is achieved by the line:
+javascript
+Copy code
+router.use('/:tourId/reviews', reviewRouter);
+Review Router Setup:
+
+The reviewRouter is defined separately and handles the review-specific routes.
+The express.Router({ mergeParams: true }) ensures that the tourId parameter from the parent route is accessible within the review router.
+The routes defined in the review router are:
+
+![s](image-2.png)
+
+POST Request to Add a Review:
+
+To add a review to a specific tour, a POST request is made to the endpoint {{URL}}/api/v1/tours/5c88fa8cf4afda39709c2955/reviews.
+This request will be handled by the createReview controller function in the reviewController.
+Middleware functions authController.protect and authController.restrictTo('user') ensure that only authenticated users with the role user can add a review.
+Example Flow of a POST Request to Add a Review
+Incoming Request:
+
+A user sends a POST request to {{URL}}/api/v1/tours/5c88fa8cf4afda39709c2955/reviews with the review data in the request body.
+Main Router:
+
+The main router receives the request and matches the route pattern /:tourId/reviews.
+The tourId in this case is 5c88fa8cf4afda39709c2955.
+Review Router:
+
+The request is forwarded to the reviewRouter because of the router.use('/:tourId/reviews', reviewRouter) line.
+The mergeParams: true option ensures that tourId is available in the reviewRouter.
+Review Router Handling:
+
+The POST request matches the route defined in the review router:
+
+![s](image-2.png)
+
+Middleware functions authController.protect and authController.restrictTo('user') run first to ensure the user is authenticated and has the user role.
+Create Review Controller:
+
+Finally, the createReview function in the reviewController handles the request, adding the review to the database associated with the tour ID 5c88fa8cf4afda39709c2955.
+
+## Summary
+
+The main router delegates review-related routes to the reviewRouter.
+The reviewRouter uses mergeParams: true to inherit parameters from the parent route.
+Middleware ensures that only authenticated users with the user role can create reviews.
+The createReview controller function handles the logic for adding a review to the specified tour.
