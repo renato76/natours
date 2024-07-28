@@ -2,7 +2,7 @@ const express = require('express')
 const userController = require('../controllers/userController')
 const authController = require('../controllers/authController')
 
-const { getAllUsers, getUser, createUser, updateUser, deleteUser } = userController
+const { getAllUsers, getUser, createUser, updateUser, deleteUser, getMe } = userController
 
 // ROUTES
 const router = express.Router()
@@ -15,6 +15,7 @@ router.patch('/resetPassword/:token', authController.resetPassword)
 
 router.patch('/updateMyPassword', authController.protect, authController.updatePassword)
 
+router.get('/me', authController.protect, getMe, getUser)
 router.patch('/updateMe', authController.protect, userController.updateMe)
 router.delete('/deleteMe', authController.protect, userController.deleteMe)
 
