@@ -53,15 +53,44 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     }
   ])
 
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].nRating,
-    ratingsAverage: stats[0].avgRating
-  })
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating
+    })
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5
+    })
+  }
 }
+
+// reviewSchema.post('save', function () { ... }):
+
+// This sets up a post-save hook for the review schema. This means that after a review document is saved, the provided function will be executed.
+// this inside the function:
+
+// In this context, this refers to the document that was just saved. Mongoose makes the saved document available through this inside post-save hooks.
+// this.constructor.calcAverageRatings(this.tour):
+
+// this.constructor refers to the model (the constructor function) associated with the document. In this case, it would be the Review model.
+// calcAverageRatings is assumed to be a static method on the Review model.
+// this.tour is a property on the review document that indicates the tour associated with the review.
 
 reviewSchema.post('save', function () {
   // this points to current review
   this.constructor.calcAverageRatings(this.tour)
+})
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.findOne()
+  console.log(this.r)
+  next()
+})
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  await this.r.constructor.calcAverageRatings(this.r.tour)
 })
 
 const Review = mongoose.model('Review', reviewSchema)
