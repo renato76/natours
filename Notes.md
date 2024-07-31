@@ -451,3 +451,51 @@ The main router delegates review-related routes to the reviewRouter.
 The reviewRouter uses mergeParams: true to inherit parameters from the parent route.
 Middleware ensures that only authenticated users with the user role can create reviews.
 The createReview controller function handles the logic for adding a review to the specified tour.
+
+## Improving read performace with indexes
+
+https://www.mongodb.com/docs/manual/indexes/?utm_source=compass&utm_medium=product#single-field
+
+If you add explain() at the end of a query
+
+![alt text](image-4.png)
+
+you can see statistics on the query results:
+
+![alt text](image-3.png)
+
+Now this shows that although it returned 3 documents because in the query string you may have added some filtering, it did actually scan the whole tours data to filter out these 3 which is not greatly efficient, especially if handling large data sets.
+
+If you look in Compass, there is an indexes tab which shows the size of the indexes.
+So what MongoDB does is it stores an indexes list of all the data which sits outside of the main data and mongodb will search thorugh this list of indexes instead of looking at the whole data:
+
+![alt text](image-5.png)
+
+In MongoDB, creating an index on a collection allows for more efficient querying of data. When you use the command tourSchema.index({ price: 1 }), you are defining an index on the price field in the tourSchema schema. Here's what this does and how it works:
+
+Creating the Index:
+
+tourSchema refers to the schema definition for a MongoDB collection, typically defined using a library like Mongoose in a Node.js environment.
+.index({ price: 1 }) creates an ascending index on the price field. The 1 specifies ascending order, while -1 would specify descending order.
+Purpose of the Index:
+
+An index on the price field allows the MongoDB database to quickly locate documents where the price matches a query condition, without having to scan the entire collection.
+This is particularly useful for queries that involve sorting, filtering, or range queries on the price field.
+Performance Benefits:
+
+Faster Queries: By indexing the price field, queries that filter or sort by price will be much faster.
+Efficient Sorting: If you frequently sort by price, the index will make these operations more efficient.
+Range Queries: Queries that look for documents within a certain range of prices will benefit from the index, as the database can quickly find the start and end points of the range.
+Considerations:
+
+Storage Cost: Indexes consume additional disk space. While they speed up read operations, they require additional storage.
+Write Performance: Indexes can impact write performance because the index must be updated each time a document is inserted, updated, or deleted.
+Choice of Fields: It's important to index fields that are frequently used in queries. Over-indexing can lead to unnecessary overhead.
+
+Now if we go back to Compass, we can see a new index with a lower size of 20.5kb
+
+![alt text](image-6.png)
+
+This does come with a cost, as it will need more storage, so you will need to look at using this if you know which fields are queried often so you can apply index on those fields.
+
+

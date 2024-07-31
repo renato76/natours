@@ -113,6 +113,10 @@ const tourSchema = new mongoose.Schema({
     toObject: { virtuals: true },
   })
 
+// sorting 1 is ascending and -1 is descending
+tourSchema.index({ price: 1, ratingsAverage: -1 })
+tourSchema.index({ slug: 1 })
+
 // we need a regular function below so we can reference "this" ot get the duration
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7

@@ -15,7 +15,11 @@ exports.getAll = Model => catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate()
 
+  // this explain() can be used to get statistics on the query
+  // const doc = await features.query.explain()
+
   const doc = await features.query
+
   res.status(200).json({
     status: 'success',
     results: doc.length,
