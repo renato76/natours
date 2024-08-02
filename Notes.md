@@ -196,7 +196,7 @@ Then we end up moving all the route handlers into their own file and exporting t
 
 So for tours we did this:
 
-![alt text](image.png)
+![alt text](public/images/image.png)
 
 Side note, what tech is used in above code?
 
@@ -209,7 +209,7 @@ Side note, what tech is used in above code?
 
 Then we import all the route handlers in tourRoutes, and use object destructuring and pass those into the appropriate routes
 
-![alt text](image-1.png)
+![alt text](public/images/image-1.png)
 
 ### Middleware
 
@@ -415,7 +415,7 @@ The reviewRouter is defined separately and handles the review-specific routes.
 The express.Router({ mergeParams: true }) ensures that the tourId parameter from the parent route is accessible within the review router.
 The routes defined in the review router are:
 
-![s](image-2.png)
+![s](public/images/image-2.png)
 
 POST Request to Add a Review:
 
@@ -438,7 +438,7 @@ Review Router Handling:
 
 The POST request matches the route defined in the review router:
 
-![s](image-2.png)
+![s](public/images/image-2.png)
 
 Middleware functions authController.protect and authController.restrictTo('user') run first to ensure the user is authenticated and has the user role.
 Create Review Controller:
@@ -458,18 +458,18 @@ https://www.mongodb.com/docs/manual/indexes/?utm_source=compass&utm_medium=produ
 
 If you add explain() at the end of a query
 
-![alt text](image-4.png)
+![alt text](public/images/image-4.png)
 
 you can see statistics on the query results:
 
-![alt text](image-3.png)
+![alt text](public/images/image-3.png)
 
 Now this shows that although it returned 3 documents because in the query string you may have added some filtering, it did actually scan the whole tours data to filter out these 3 which is not greatly efficient, especially if handling large data sets.
 
 If you look in Compass, there is an indexes tab which shows the size of the indexes.
 So what MongoDB does is it stores an indexes list of all the data which sits outside of the main data and mongodb will search thorugh this list of indexes instead of looking at the whole data:
 
-![alt text](image-5.png)
+![alt text](public/images/image-5.png)
 
 In MongoDB, creating an index on a collection allows for more efficient querying of data. When you use the command tourSchema.index({ price: 1 }), you are defining an index on the price field in the tourSchema schema. Here's what this does and how it works:
 
@@ -494,8 +494,6 @@ Choice of Fields: It's important to index fields that are frequently used in que
 
 Now if we go back to Compass, we can see a new index with a lower size of 20.5kb
 
-![alt text](image-6.png)
+![alt text](public/images/image-6.png)
 
 This does come with a cost, as it will need more storage, so you will need to look at using this if you know which fields are queried often so you can apply index on those fields.
-
-
