@@ -497,3 +497,13 @@ Now if we go back to Compass, we can see a new index with a lower size of 20.5kb
 ![alt text](public/images/image-6.png)
 
 This does come with a cost, as it will need more storage, so you will need to look at using this if you know which fields are queried often so you can apply index on those fields.
+
+For Geospatial queries, we used the Geospatial - geowithin query operatord from mongodb, here is a link to the docs:
+https://www.mongodb.com/docs/manual/reference/operator/query
+
+and a screenshot of where the info is located.
+![alt text](public/images/image-7.png)
+
+And in the data in tours.json, you can see we have the startLocation data for each tour, with the coordinates lat long values, address etc
+
+![alt text](public/images/image-8.png)
