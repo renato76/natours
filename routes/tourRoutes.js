@@ -3,7 +3,7 @@ const tourController = require('../controllers/tourController')
 const authController = require("../controllers/authController")
 const reviewRouter = require("./reviewRoutes")
 
-const { getAllTours, getTour, createTour, updateTour, deleteTour, aliasTopTours, getTourStats, getMonthlyPlan, getToursWithin } = tourController
+const { getAllTours, getTour, createTour, updateTour, deleteTour, aliasTopTours, getTourStats, getMonthlyPlan, getToursWithin, getDistances } = tourController
 
 const router = express.Router()
 
@@ -26,6 +26,8 @@ router
 // here are a couple of ways we could specify this
 // /tours-distance?distance=233&center=-40,45&unit=mi
 // /tours-distance/233/center/-40,45/unit/mi
+
+router.route('/distances/:latlng/unit/:unit').get(getDistances)
 
 router
   .route('/')
