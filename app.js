@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
@@ -14,6 +15,12 @@ const reviewRouter = require('./routes/reviewRoutes')
 
 const baseUrl = '/api/v1'
 const app = express()
+
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views'))
+
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')))
 
 // 1. GLOBAL MIDDLEWARE
 
@@ -57,14 +64,15 @@ app.use(
   })
 )
 
-// Serving static files
-app.use(express.static(`${__dirname}/public`))
-
 // Test middleware 
 app.use((req, _res, next) => {
   req.requestTime = new Date().toISOString()
   // console.log(req.headers)
   next()
+})
+
+app.get('/', (req, res) => {
+  res.status(200).render('base')
 })
 
 // 2. MOUNTING THE ROUTES
