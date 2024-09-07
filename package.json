@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/nodemailer": "^6.4.15",
+    "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",
     "eslint": "^8.48.0",
